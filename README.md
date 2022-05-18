@@ -1,5 +1,5 @@
 ## Create React App Visualization
 
-This assessment was bespoke handcrafted for bob-feuerstein.
+This assessment was bespoke handcrafted for Bob Feuerstein.
 
 Read more about this assessment [here](https://react.eogresources.com)
