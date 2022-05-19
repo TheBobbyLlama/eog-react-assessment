@@ -1,16 +1,9 @@
-import React, { FC } from 'react';
-import {
-  ApolloClient, ApolloProvider, useQuery, gql, InMemoryCache,
-} from '@apollo/client';
+import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 import { useGeolocation } from 'react-use';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Typography } from '@material-ui/core';
 import Chip from '../../components/Chip';
-
-const client = new ApolloClient({
-  uri: 'https://react-assessment.herokuapp.com/graphql',
-  cache: new InMemoryCache(),
-});
 
 const toF = (c: number) => (c * 9) / 5 + 32;
 
@@ -33,7 +26,7 @@ type WeatherDataResponse = {
   getWeatherForLocation: WeatherData;
 };
 
-const Weather: FC = () => {
+export default () => {
   const getLocation = useGeolocation();
   // Default to houston
   const latLong = {
@@ -55,9 +48,3 @@ const Weather: FC = () => {
 
   return <Chip label={`Weather in ${locationName}: ${description} and ${Math.round(toF(temperatureinCelsius))}°`} />;
 };
-
-export default () => (
-  <ApolloProvider client={client}>
-    <Weather />
-  </ApolloProvider>
-);

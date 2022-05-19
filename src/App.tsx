@@ -1,11 +1,18 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/Header';
 import Wrapper from './components/Wrapper';
+import MetricMonitor from './components/MetricMonitor';
 import Dashboard from './components/Dashboard';
+
+const client = new ApolloClient({
+  uri: 'https://react-assessment.herokuapp.com/graphql',
+  cache: new InMemoryCache(),
+});
 
 const theme = createTheme({
   palette: {
@@ -22,14 +29,17 @@ const theme = createTheme({
 });
 
 const App = () => (
-  <MuiThemeProvider theme={theme}>
-    <CssBaseline />
-    <Wrapper>
-      <Header />
-      <Dashboard />
-      <ToastContainer />
-    </Wrapper>
-  </MuiThemeProvider>
+  <ApolloProvider client={client}>
+    <MuiThemeProvider theme={theme}>
+      <MetricMonitor />
+      <CssBaseline />
+      <Wrapper>
+        <Header />
+        <Dashboard />
+        <ToastContainer />
+      </Wrapper>
+    </MuiThemeProvider>
+  </ApolloProvider>
 );
 
 export default App;
