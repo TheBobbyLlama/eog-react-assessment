@@ -37,7 +37,7 @@ export default (props: { selected: string[] }) => {
           const lastData = data[data.length - 1];
 
           return (
-            <Box className={classes.metricRealtimeCard}>
+            <Box key={metric} className={classes.metricRealtimeCard}>
               <Card>
                 <CardContent>
                   <h3>{metric}</h3>
