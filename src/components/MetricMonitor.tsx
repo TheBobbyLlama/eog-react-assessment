@@ -1,8 +1,12 @@
 // This component does nothing but feed data to the Redux store.
 import React, { useEffect } from 'react';
-import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { useQuery, useLazyQuery, useSubscription, gql } from '@apollo/client'; // eslint-disable-line object-curly-newline
 import { useAppDispatch } from '../redux/hooks';
-import { setMetricTypes, setMeasurementHistory } from '../redux/metricSlice';
+import {
+  setMetricTypes,
+  setMeasurementHistory,
+  addNewMeasurement,
+} from '../redux/metricSlice';
 import { MultipleMeasurementData } from '../globals';
 
 type MetricTypeResponse = {
@@ -32,12 +36,33 @@ const loadMeasurements = gql`
   }
 `;
 
+const listenForMeasurements = gql`
+  subscription {
+    newMeasurement {
+      metric
+      at
+      value
+      unit
+    }
+  }
+`;
+
 export default () => {
   const { data: metricTypes } = useQuery<MetricTypeResponse>(metricsQuery);
   const [loadMeasurementHistory, { data: measurementHistory }] = // eslint-disable-line operator-linebreak, max-len
     useLazyQuery<MultiMeasurementResponse>(loadMeasurements);
 
   const dispatch = useAppDispatch();
+
+  useSubscription(listenForMeasurements, {
+    onSubscriptionData: (options: any) => {
+      if ((measurementHistory) && (options?.subscriptionData?.data?.newMeasurement)) {
+        dispatch(
+          addNewMeasurement(options.subscriptionData.data.newMeasurement),
+        );
+      }
+    },
+  });
 
   useEffect(() => {
     if (metricTypes?.getMetrics) {

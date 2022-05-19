@@ -1,6 +1,14 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  HttpLink,
+  split,
+} from '@apollo/client';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,8 +17,31 @@ import Wrapper from './components/Wrapper';
 import MetricMonitor from './components/MetricMonitor';
 import Dashboard from './components/Dashboard';
 
-const client = new ApolloClient({
+const httpLink = new HttpLink({
   uri: 'https://react-assessment.herokuapp.com/graphql',
+});
+
+const wsLink = new WebSocketLink({
+  uri: 'ws://react-assessment.herokuapp.com/graphql',
+  options: {
+    reconnect: true,
+  },
+});
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' && // eslint-disable-line operator-linebreak
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  httpLink,
+);
+
+const client = new ApolloClient({
+  link: splitLink,
   cache: new InMemoryCache(),
 });
 
