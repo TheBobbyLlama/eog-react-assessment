@@ -28,8 +28,6 @@ export default (props: { selected: string[] }) => {
     (state) => state.metrics.measurementData,
   );
 
-  console.log(selected);
-
   return (
     <Box className={classes.metricCards}>
       {selected.map((metric) => {

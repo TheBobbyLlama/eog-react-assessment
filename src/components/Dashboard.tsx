@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container } from '@material-ui/core';
 
 import DashboardMetrics from './DashboardMetrics';
 import DashboardGraph from './DashboardGraph';
 
 export default () => {
-  console.log('here');
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
 
   return (
     <Container>
-      <DashboardMetrics />
-      <DashboardGraph />
+      <DashboardMetrics
+        selectedMetrics={selectedMetrics}
+        setSelectedMetrics={setSelectedMetrics}
+      />
+      <DashboardGraph selected={selectedMetrics} />
     </Container>
   );
 };

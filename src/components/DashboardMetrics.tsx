@@ -1,4 +1,4 @@
-import React, { useState, BaseSyntheticEvent } from 'react';
+import React, { BaseSyntheticEvent } from 'react';
 import { Chip, Box, Select, MenuItem } from '@material-ui/core'; // eslint-disable-line object-curly-newline
 import { makeStyles } from '@material-ui/core/styles';
 import { useAppSelector } from '../redux/hooks';
@@ -22,10 +22,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default () => {
+export default (props: {
+  selectedMetrics: string[];
+  setSelectedMetrics: (a: string[]) => void;
+}) => {
+  const { selectedMetrics, setSelectedMetrics } = props;
   const classes = useStyles();
   const metricTypes = useAppSelector((state) => state.metrics.metricTypes);
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
 
   const onMetricsChanged = (e: BaseSyntheticEvent) => {
     const {
@@ -43,18 +46,13 @@ export default () => {
     );
   };
 
-  // TODO - This won't trigger because the select component takes the event and opens itself first!
-  const onMetricDeleted = (e: BaseSyntheticEvent) => {
-    console.log(e);
-  };
-
   const showMetricChips = (selected: any) => {
     const selectedItems = selected as string[];
 
     return (
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
         {selectedItems.map((value: string) => (
-          <Chip key={value} label={value} onDelete={onMetricDeleted} />
+          <Chip key={value} label={value} />
         ))}
       </Box>
     );
