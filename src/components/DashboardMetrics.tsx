@@ -27,8 +27,6 @@ export default () => {
   const metricTypes = useAppSelector((state) => state.metrics.metricTypes);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
 
-  console.log(selectedMetrics, setSelectedMetrics);
-
   const onMetricsChanged = (e: BaseSyntheticEvent) => {
     const {
       target: { value },
@@ -64,7 +62,7 @@ export default () => {
 
   return (
     <Box className={classes.metricContainer}>
-      <MetricCards />
+      <MetricCards selected={selectedMetrics} />
       <Box className={classes.metricControls}>
         <Select
           multiple
