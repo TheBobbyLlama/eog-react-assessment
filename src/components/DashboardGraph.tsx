@@ -51,12 +51,17 @@ export default (props: { selected: string[] }) => {
     x: { display: false },
   };
 
-  selected.forEach((_, index) => {
-    const result = {
+  // Set scales for graph.
+  selected.forEach((metric, index) => {
+    const result = (measurementData[metric][0]?.unit !== '%') ? {
       type: 'linear' as const,
       display: true,
       position: 'left' as const,
       grid: index > 0 ? { drawOnChartArea: false } : undefined,
+    } : {
+      display: false,
+      min: 0,
+      max: 100,
     };
     const key = `y${index}`;
 
@@ -64,7 +69,7 @@ export default (props: { selected: string[] }) => {
   });
 
   const options = {
-    responsive: true,
+    animation: { duration: 0 },
     interaction: {
       mode: 'index' as const,
       intersect: false,
@@ -73,6 +78,7 @@ export default (props: { selected: string[] }) => {
     scales,
   };
 
+  // Fill datasets.
   const datasets: GraphData[] = [];
 
   selected.forEach((metric, index) => {
